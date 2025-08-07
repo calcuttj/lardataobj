@@ -16,6 +16,7 @@
 #include <string>
 #include <utility> // std::pair
 #include <vector>
+
 namespace sim {
 
   /// Ionization photons from a Geant4 track
@@ -102,6 +103,10 @@ namespace sim {
       double const* xyz,
       double energy);
 
+    const std::map<timePDclock_t, std::vector<sim::SDP>> & timePDclockSDPsMap() {
+      return fTimePDclockSDPs;
+    }
+
   private:
     std::map<timePDclock_t, std::vector<sim::SDP>> fTimePDclockSDPs;
     TrackID_t fTrackID;
@@ -151,7 +156,7 @@ namespace sim {
     /// Constructor: immediately sets the Optical Detector number
     explicit OpDetBacktrackerRecord(int detNum);
 
-    explicit OpDetBacktrackerRecord(OBTRHelper& helper);
+    explicit OpDetBacktrackerRecord(OBTRHelper&& helper);
 
     /**
      * @brief Add scintillation photons and energy to this OpticalDetector
@@ -301,6 +306,7 @@ namespace sim {
     /// Return the (constant) iterator to the first timePDclockSDP not earlier than timePDclock
     timePDclockSDPs_t::const_iterator findClosestTimePDclockSDP(
       storedTimePDclock_t timePDclock) const;
+    
   };
 
 } // namespace sim
@@ -354,6 +360,7 @@ void sim::OpDetBacktrackerRecord::Dump(Stream&& out,
   out << indent << "  => channel #" << OpDetNum() << " collected " << opDet_photons
       << " photons and " << opDet_energy << " MeV.\n";
 } // sim::OpDetBacktrackerRecord::Dump<>()
+
 
 #endif // LARSIMOBJ_SIMULATION_OPDETBACKTRACKERRECORD_H
 

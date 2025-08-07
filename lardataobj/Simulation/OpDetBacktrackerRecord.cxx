@@ -116,7 +116,7 @@ namespace sim {
   OpDetBacktrackerRecord::OpDetBacktrackerRecord(int detNum) : iOpDetNum(detNum) {}
 
   //-------------------------------------------------
-  OpDetBacktrackerRecord::OpDetBacktrackerRecord(OBTRHelper& helper) : iOpDetNum(helper.fTrackID)
+  OpDetBacktrackerRecord::OpDetBacktrackerRecord(OBTRHelper&& helper) : iOpDetNum(helper.fTrackID)
   {
     auto& sdp_map = helper.fTimePDclockSDPs;
     for (auto& [channel, vec] : sdp_map) {
@@ -124,7 +124,10 @@ namespace sim {
       // std::cout << "Moving SDP vector for channel " << channel << " with size " << vec.size() << std::endl;
       timePDclockSDPs.emplace_back((double)channel, std::move(vec));
       // std::cout << "Moved " << vec.size() << " " << timePDclockSDPs.back().second.size() << std::endl;
+
+      sdp_map.erase(channel);//Free up some space
     }
+    sdp_map.clear();//Free up the map though it should be empty now
   }
 
   //-------------------------------------------------
